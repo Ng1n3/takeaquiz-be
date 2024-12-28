@@ -1,0 +1,61 @@
+{
+  "version": "4",
+  "specifiers": {
+    "jsr:@std/assert@1": "1.0.10",
+    "jsr:@std/internal@^1.0.5": "1.0.5",
+    "npm:drizzle-orm@~0.38.3": "0.38.3",
+    "npm:drizzle-zod@~0.6.1": "0.6.1_drizzle-orm@0.38.3_zod@3.24.1",
+    "npm:zennv@*": "0.1.1",
+    "npm:zennv@~0.1.1": "0.1.1",
+    "npm:zod@*": "3.24.1",
+    "npm:zod@^3.24.1": "3.24.1"
+  },
+  "jsr": {
+    "@std/assert@1.0.10": {
+      "integrity": "59b5cbac5bd55459a19045d95cc7c2ff787b4f8527c0dd195078ff6f9481fbb3",
+      "dependencies": [
+        "jsr:@std/internal"
+      ]
+    },
+    "@std/internal@1.0.5": {
+      "integrity": "54a546004f769c1ac9e025abd15a76b6671ddc9687e2313b67376125650dc7ba"
+    }
+  },
+  "npm": {
+    "dotenv@16.4.7": {
+      "integrity": "sha512-47qPchRCykZC03FhkYAhrvwU4xDBFIj1QPqaarj6mdM/hgUzfPHcpkHJOn3mJAufFeeAxAzeGsr5X0M4k6fLZQ=="
+    },
+    "drizzle-orm@0.38.3": {
+      "integrity": "sha512-w41Y+PquMpSff/QDRGdItG0/aWca+/J3Sda9PPGkTxBtjWQvgU1jxlFBXdjog5tYvTu58uvi3PwR1NuCx0KeZg=="
+    },
+    "drizzle-zod@0.6.1_drizzle-orm@0.38.3_zod@3.24.1": {
+      "integrity": "sha512-huEbUgnsuR8tupnmLiyB2F1I2H9dswI3GfM36IbIqx9i0YUeYjRsDpJVyFVeziUvI1ogT9JHRL2Q03cC4QmvxA==",
+      "dependencies": [
+        "drizzle-orm",
+        "zod"
+      ]
+    },
+    "zennv@0.1.1": {
+      "integrity": "sha512-yAszZBjMYY97kuQ7pVQm5FLz/amtOpzyyhaF7+CwdJZ3Kz9f60pLy2LRqygdcWcV3LcxsUcngfWXxk5ZO98XRQ==",
+      "dependencies": [
+        "dotenv",
+        "zod"
+      ]
+    },
+    "zod@3.24.1": {
+      "integrity": "sha512-muH7gBL9sI1nciMZV67X5fTKKBLtwpZ5VBp1vsOQzj1MhrBZ4wlVCm3gedKZWLp0Oyel8sIGfeiz54Su+OVT+A=="
+    }
+  },
+  "remote": {
+    "https://deno.land/std@0.202.0/dotenv/mod.ts": "1da8c6d0e7f7d8a5c2b19400b763bc11739df24acec235dda7ea2cfd3d300057"
+  },
+  "workspace": {
+    "dependencies": [
+      "jsr:@std/assert@1",
+      "npm:drizzle-orm@~0.38.3",
+      "npm:drizzle-zod@~0.6.1",
+      "npm:zennv@~0.1.1",
+      "npm:zod@^3.24.1"
+    ]
+  }
+}
