@@ -17,7 +17,7 @@ export function setupDb(url: string | undefined = config.DATABASE_URL) {
 }
 
 export function ping(db: DB) {
-  console.log("fucking hit!");
+  // console.log("fucking hit!");
   return db.execute(sql`SELECT 1`);
 }
 
