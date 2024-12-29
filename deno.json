@@ -1,6 +1,8 @@
 {
   "tasks": {
-    "dev": "deno run --watch main.ts"
+    "dev": "deno run --watch main.ts",
+    "dev:docker": "docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build -d",
+    "dev:docker:down": "docker compose -f docker-compose.yml -f docker-compose.dev.yml down"
   },
   "nodeModulesDir": "auto",
   "imports": {
