@@ -7,6 +7,8 @@ RUN apk update && \
     apk add --no-cache curl tzdata && \
     rm -rf /var/cache/apk/*
 
+RUN apk add --no-cache postgresql-client
+
 #create a non-root user if it doesn't exist
 RUN getent group deno || addgroup --system deno && \
     id -u deno &>/dev/null || adduser --system --ingroup deno deno

@@ -18,8 +18,9 @@
     "db:generate": "bun run drizzle-kit generate",
     "db:seed": "bun src/dev/seed.ts",
     "db:migrate": "bun run drizzle-kit migrate",
-    "dev:docker:up": "docker compose -f docker-compose.dev.yml up --build -d",
-    "dev:docker:down": "docker compose -f docker-compose.dev.yml down"
+    "dev:docker:up": "docker compose -f docker-compose.dev.yml up --build",
+    "dev:docker:down": "docker compose -f docker-compose.dev.yml down",
+    "docker:logs": "docker compose logs -f"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"

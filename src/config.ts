@@ -14,8 +14,9 @@ export type Config = z.infer<typeof schema>;
 export const config = schema.parse({
   PORT: parseInt(process.env.PORT ?? '5000', 10),
   HOST: process.env.HOST ?? '0.0.0.0',
-  DATABASE_URL: process.env.DATABASE_URL,
-  LOG_LEVEL:  'info',
+  // DATABASE_URL: process.env.DATABASE_URL || process.env.DATABASE_URL_DOCKER,
+  DATABASE_URL: process.env.DATABASE_URL_DOCKER,
+  LOG_LEVEL: 'info',
   METRICS_PREFIX: 'app_',
   COOKIE_NAME: process.env.COOKIE_NAME,
 });
