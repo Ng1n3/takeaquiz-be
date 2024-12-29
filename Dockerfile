@@ -1,5 +1,5 @@
 #official Deno.js runtime as parent image
-FROM denoland/deno:alpine AS base
+FROM oven/bun:canary-alpine AS base
 
 # Install additional security updates and required packages
 RUN apk update && \
@@ -15,24 +15,23 @@ RUN getent group deno || addgroup --system deno && \
 WORKDIR /app
 
 #copy dependency files
-COPY deno.json deno.lock main.ts ./
-COPY src/config.ts ./src/
+COPY package.json ./
+COPY bun.lockb ./
 
-#cache dependencies
-RUN deno cache --reload --lock=deno.lock src/config.ts
+#install dependencies
+RUN bun install
 
 # Copy application source
 COPY . .
 
-#Compline the app
-RUN deno cache main.ts && \
-chown -R deno:deno /app
+#change ownereship to non-root
+RUN chown -R bun:bun /app
 
 # Define the production stage
 FROM base AS production
 
 #Switch to non-root user
-USER deno
+USER bun
 
 #Expose port
 EXPOSE 5000
@@ -41,15 +40,14 @@ EXPOSE 5000
 HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
 CMD curl -f http://localhost:5000/health || exit 1
 
-CMD ["deno", "run", "--allow-net", "main.ts" ]
+CMD ["bun", "run", "main.ts" ]
 
 #Define the development stage
 FROM base AS development
 #Switch to non-root user
-USER deno
+USER bun
 
 #Expose port
 EXPOSE 5000
 
-CMD ["deno", "task", "dev" ]
-
+CMD ["bun", "run", "dev" ]

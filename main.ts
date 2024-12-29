@@ -1,4 +1,4 @@
-import express, { Application } from 'npm:express';
+import express, { Application } from 'express';
 import { config } from './src/config.ts';
 import { ping, setupDb } from './src/db/index.ts';
 import process from "node:process";

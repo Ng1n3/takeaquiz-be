@@ -5,7 +5,7 @@ import {
   timestamp,
   uniqueIndex,
   uuid,
-} from 'npm:drizzle-orm/pg-core';
+} from 'drizzle-orm/pg-core';
 
 const timeStamp = {
   createdAt: timestamp('created_at', { withTimezone: true })

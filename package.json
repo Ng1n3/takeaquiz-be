@@ -8,7 +8,7 @@
     "eslint": "^9.17.0"
   },
   "scripts": {
-    "dev": "bun src/main.ts",
+    "dev": "bun main.ts",
     "build": "bun build",
     "test": "bun run vitest",
     "lint": "bun run eslint src",
