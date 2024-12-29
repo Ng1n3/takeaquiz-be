@@ -1,6 +1,6 @@
-import { sql } from 'npm:drizzle-orm';
-import { drizzle } from 'npm:drizzle-orm/postgres-js';
-import postgres from 'npm:postgres';
+import { sql } from 'drizzle-orm';
+import { drizzle } from 'drizzle-orm/postgres-js';
+import postgres from 'postgres';
 import { config } from '../config.ts';
 import * as schema from './schema.ts';
 

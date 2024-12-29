@@ -1,4 +1,4 @@
-import { migrate } from 'npm:drizzle-orm/postgres-js/migrator';
+import { migrate } from 'drizzle-orm/postgres-js/migrator';
 import { config } from '../config.ts';
 
 async function run() {
@@ -11,10 +11,10 @@ async function run() {
     console.log('Migration completed successfully');
 
     //Proper cleanup
-    await client.end;
+    await client.end();
   } catch (error) {
     console.error('Migration failed:', error);
-    Deno.exit(1);
+    process.exit(1);
   }
 }
 
