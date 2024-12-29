@@ -1,13 +1,13 @@
 {
   "tasks": {
     "dev": "deno run --allow-net --allow-read --allow-env --watch main.ts",
-    "migrate": "deno run --allow-net --allow-read --allow-env scripts/migrate.ts",
+    "migrate": "deno run --allow-net --allow-read --allow-env src/db/migrate.ts",
     "generate": "deno run --allow-net --allow-read --allow-write --allow-env npm:drizzle-kit generate:pg",
     "push": "deno run --allow-net --allow-read --allow-write --allow-env npm:drizzle-kit push:pg",
     "drop": "deno run --allow-net --allow-read --allow-write --allow-env npm:drizzle-kit drop",
     "studio": "deno run --allow-net --allow-read --allow-write --allow-env npm:drizzle-kit studio",
-    "dev:docker": "docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build -d",
-    "dev:docker:down": "docker compose -f docker-compose.yml -f docker-compose.dev.yml down"
+    "dev:docker": "docker compose -f docker-compose.dev.yml up --build -d",
+    "dev:docker:down": "docker compose -f docker-compose.dev.yml down"
   },
   "nodeModulesDir": "auto",
   "imports": {
