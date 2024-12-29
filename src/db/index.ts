@@ -8,15 +8,16 @@ export function setupDb(url: string | undefined = config.DATABASE_URL) {
   if (!url) {
     throw new Error('DATABASE_URL is not set');
   }
-
-  const client = postgres(url, {});
-
+  
+  const client = postgres(url);
+  
   const db = drizzle(client, { schema });
-
+  
   return { client, db };
 }
 
 export function ping(db: DB) {
+  console.log("fucking hit!");
   return db.execute(sql`SELECT 1`);
 }
 
