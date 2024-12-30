@@ -1,6 +1,6 @@
 import { BaseError } from './BaseError';
 
-export class AuthentcationError extends BaseError {
+export class AuthenticationError extends BaseError {
   constructor(
     message: string = 'Authentication failed',
     meta?: Record<string, any>

@@ -1,11 +1,14 @@
 import {
+  boolean,
   numeric,
   pgTable,
   text,
   timestamp,
   uniqueIndex,
   uuid,
+  varchar,
 } from 'drizzle-orm/pg-core';
+import { nanoid } from 'nanoid';
 
 const timeStamp = {
   createdAt: timestamp('created_at', { withTimezone: true })
@@ -16,6 +19,16 @@ const timeStamp = {
     .$onUpdateFn(() => new Date())
     .notNull(),
 };
+
+export const sessions = pgTable('sessions', {
+  id: varchar('id', { length: 21 })
+    .primaryKey()
+    .$defaultFn(() => nanoid()),
+  userId: varchar('user_id').references(() => users.id),
+  valid: boolean('valid').default(true).notNull(),
+  userAgent: text('user_agent'),
+  ...timestamp,
+});
 
 export const users = pgTable('users', {
   id: uuid('id').primaryKey().notNull(),
