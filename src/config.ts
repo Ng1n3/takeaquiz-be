@@ -6,7 +6,11 @@ const schema = z.object({
   DATABASE_URL: z.string().optional(),
   LOG_LEVEL: z.string().default('info'),
   METRICS_PREFIX: z.string().default('app_'),
-  COOKIE_NAME: z.string().default('session'),
+  SALT_WORK_FACTOR: z.string(),
+  PUBLIC_KEY: z.string(),
+  ACCESS_TOKEN_TTL: z.string(),
+  REFRESH_TOKEN: z.string(),
+  PRIVATE_KEY: z.string(),
 });
 
 export type Config = z.infer<typeof schema>;
@@ -18,5 +22,9 @@ export const config = schema.parse({
   DATABASE_URL: process.env.DATABASE_URL_DOCKER,
   LOG_LEVEL: 'info',
   METRICS_PREFIX: 'app_',
-  COOKIE_NAME: process.env.COOKIE_NAME,
+  SALT_WORK_FACTOR: process.env.SALT_WORK_FACTOR,
+  ACCESS_TOKEN_TTL: process.env.ACCESS_TOKEN_TTL,
+  PUBLIC_KEY: process.env.PUBLIC_KEY,
+  REFRESH_TOKEN: process.env.REFRESH_TOKEN,
+  PRIVATE_KEY: process.env.PRIVATE_KEY,
 });
