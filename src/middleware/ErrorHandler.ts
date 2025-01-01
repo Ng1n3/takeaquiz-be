@@ -4,8 +4,8 @@ import { BaseError } from '../error/BaseError';
 export class ErrorHandler {
   static handleError(
     error: Error,
-    res: Response,
     req: Request,
+    res: Response,
     next: NextFunction
   ): void {
     // Log the error (you can use a logging service here)
