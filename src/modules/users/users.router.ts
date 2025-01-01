@@ -10,7 +10,8 @@ export function userRouter() {
   router.post(
     '/users',
     validateRequest(createUserSchema),
-    asyncHandler(createUserHandler)
+    asyncHandler(createUserHandler),
+    
   );
 
   return router;

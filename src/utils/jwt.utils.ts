@@ -1,6 +1,8 @@
+import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { config } from '../config';
 import { AuthenticationError } from '../error/AuthenticationError';
+import { BaseError } from '../error/BaseError';
 
 const privateKey = config.PRIVATE_KEY;
 const publicKey = config.PUBLIC_KEY;
@@ -21,11 +23,6 @@ export function verifyJwt(token: string) {
       decoded,
     };
   } catch (error: any) {
-    // return {
-    //   valid: false,
-    //   expired: error.message === 'jwt expired',
-    //   decode: null,
-    // };
     if (error.name === 'TokenExpiredError') {
       throw new AuthenticationError('JWT has expired', {
         reason: error.message,
@@ -42,5 +39,19 @@ export function verifyJwt(token: string) {
     throw new AuthenticationError('Failed to verify JWT', {
       reason: error.message,
     });
+  }
+}
+const SALT = process.env.WORK_SALT_FACTOR;
+
+if (!SALT || isNaN(parseInt(SALT))) {
+  throw new BaseError('invalid salt factor', 'Salt factor must be a number');
+}
+const saltFactor = await bcrypt.genSalt(parseInt(SALT, 10));
+
+export async function hashRefreshToken(token: string): Promise<string> {
+  try {
+    return bcrypt.hash(token, saltFactor);
+  } catch (error) {
+    throw new BaseError('Error hashing token', error.message);
   }
 }

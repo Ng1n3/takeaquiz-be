@@ -1,16 +1,36 @@
-import { eq } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 import { get } from 'lodash';
 import { DB } from '../../db';
 import { sessions } from '../../db/schema';
 import { AuthenticationError } from '../../error/AuthenticationError';
-import { signJwt, verifyJwt } from '../../utils/jwt.utils';
+import { hashRefreshToken, signJwt, verifyJwt } from '../../utils/jwt.utils';
 import { findUser } from '../users/users.service';
 
 export async function createSession(db: DB, userId: string, userAgent: string) {
   try {
+    // check if there is an existing session for this user
+    const existingSession = await db
+      .select({ id: sessions.id })
+      .from(sessions)
+      .where(and(eq(sessions.userId, userId), eq(sessions.valid, true)))
+      .limit(1);
+
+    if (existingSession.length > 0) {
+      await db
+        .update(sessions)
+        .set({ valid: false })
+        .where(eq(sessions.userId, userId))
+        .returning();
+      return new AuthenticationError('Existing session invalidated');
+    }
+
+    const token = signJwt({ userId, userAgent });
+
+    const HashedToken = await hashRefreshToken(token);
+
     const [session] = await db
       .insert(sessions)
-      .values({ userId, userAgent, valid: true })
+      .values({ userId, userAgent, valid: true, refreshToken: HashedToken })
       .returning();
 
     return session;
@@ -59,7 +79,6 @@ export async function reIssueAccessToken(
     .from(sessions)
     .where(eq(sessions.id, sessionId))
     .limit(1);
-
 
   if (session.length === 0 || !session[0].valid) {
     throw new AuthenticationError('Invalid session');
