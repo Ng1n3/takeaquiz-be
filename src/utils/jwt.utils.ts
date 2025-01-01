@@ -1,4 +1,3 @@
-import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { config } from '../config';
 import { AuthenticationError } from '../error/AuthenticationError';
@@ -41,16 +40,14 @@ export function verifyJwt(token: string) {
     });
   }
 }
-const SALT = process.env.WORK_SALT_FACTOR;
-
-if (!SALT || isNaN(parseInt(SALT))) {
-  throw new BaseError('invalid salt factor', 'Salt factor must be a number');
-}
-const saltFactor = await bcrypt.genSalt(parseInt(SALT, 10));
+const SALT = process.env.WORK_SALT_FACTOR!;
 
 export async function hashRefreshToken(token: string): Promise<string> {
   try {
-    return bcrypt.hash(token, saltFactor);
+    return await Bun.password.hash(token, {
+      algorithm: 'bcrypt',
+      cost: parseInt(SALT),
+    });
   } catch (error) {
     throw new BaseError('Error hashing token', error.message);
   }

@@ -4,15 +4,15 @@ import { asyncHandler } from '../../utils/asyncHandlers';
 import { createUserHandler } from './users.controller';
 import { createUserSchema } from './users.schema';
 
-
 export function userRouter() {
   const router = express.Router();
   router.post(
     '/users',
     validateRequest(createUserSchema),
-    asyncHandler(createUserHandler),
-    
+    asyncHandler(createUserHandler)
   );
 
   return router;
 }
+
+
