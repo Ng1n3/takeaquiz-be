@@ -1,11 +1,11 @@
 import { eq, or, SQLWrapper } from 'drizzle-orm';
 import {  omit } from 'lodash';
-import { DB } from '../../../db';
-import { users } from '../../../db/schema';
-import { AuthenticationError } from '../../../error/AuthenticationError';
-import { BaseError } from '../../../error/BaseError';
-import { UniqueConstraintError } from '../../../error/ValidationError';
-import { comparePasswords } from '../../../utils/user.util';
+import { DB } from '../../db';
+import { users } from '../../db/schema';
+import { AuthenticationError } from '../../error/AuthenticationError';
+import { BaseError } from '../../error/BaseError';
+import { UniqueConstraintError } from '../../error/ValidationError';
+import { comparePasswords } from '../../utils/user.util';
 
 interface createUserInput {
   username: string;

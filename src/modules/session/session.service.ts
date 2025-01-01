@@ -4,7 +4,7 @@ import { DB } from '../../db';
 import { sessions } from '../../db/schema';
 import { AuthenticationError } from '../../error/AuthenticationError';
 import { signJwt, verifyJwt } from '../../utils/jwt.utils';
-import { findUser } from './users/users.service';
+import { findUser } from '../users/users.service';
 
 export async function createSession(db: DB, userId: string, userAgent: string) {
   try {
@@ -17,6 +17,26 @@ export async function createSession(db: DB, userId: string, userAgent: string) {
   } catch (error) {
     throw new AuthenticationError('Error creating session');
   }
+}
+
+export async function findSession(db: DB, sessionId: string) {
+  const session = await db
+    .select({ id: sessions.id, userId: sessions.userId, valid: sessions.valid })
+    .from(sessions)
+    .where(eq(sessions.id, sessionId))
+    .limit(1);
+
+  return session.length > 0 ? session[0] : null;
+}
+
+export async function updateSession(db: DB, sessionId: string, valid: boolean) {
+  const [session] = await db
+    .update(sessions)
+    .set({ valid })
+    .where(eq(sessions.id, sessionId))
+    .returning();
+
+  return session;
 }
 
 export async function reIssueAccessToken(
