@@ -1,8 +1,11 @@
-import { update } from 'lodash';
+import { eq } from 'drizzle-orm';
 import { DB } from '../../../db';
 import { users } from '../../../db/schema';
+import { AuthenticationError } from '../../../error/AuthenticationError';
 import { BaseError } from '../../../error/BaseError';
 import { UniqueConstraintError } from '../../../error/ValidationError';
+import { comparePasswords } from '../../../utils/user.util';
+import { omit } from 'lodash';
 
 interface createUserInput {
   username: string;
@@ -54,5 +57,41 @@ export async function createUser(
       'Error creating user: ' +
         (error instanceof Error ? error.message : 'Unknown error')
     );
+  }
+}
+
+export async function validatePassword(
+  db: DB,
+  email: string,
+  password: string
+): Promise<UserWithoutPassword | AuthenticationError> {
+  try {
+    const [user] = await db
+      // .query(users)
+      .select({
+        id: users.id,
+        email: users.email,
+        username: users.username,
+        password: users.password,
+        createdAt: users.createdAt,
+        updatedAt: users.updatedAt,
+      })
+      .from(users)
+      .where(eq(users.email, email))
+      .limit(1);
+
+    if (!user) {
+      return new AuthenticationError('User not found');
+    }
+
+    // Check password
+    const issValid = await comparePasswords(password, user.password);
+
+    if (!issValid) return new AuthenticationError('Invalid password');
+
+    // const {password:_, ...userWIthoutPassword} = users
+    return omit(user, 'password');
+  } catch (error) {
+    throw new AuthenticationError("error validating users's password");
   }
 }
