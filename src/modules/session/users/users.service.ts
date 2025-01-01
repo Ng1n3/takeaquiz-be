@@ -1,11 +1,11 @@
-import { eq } from 'drizzle-orm';
+import { eq, or, SQLWrapper } from 'drizzle-orm';
+import { find, omit } from 'lodash';
 import { DB } from '../../../db';
 import { users } from '../../../db/schema';
 import { AuthenticationError } from '../../../error/AuthenticationError';
 import { BaseError } from '../../../error/BaseError';
 import { UniqueConstraintError } from '../../../error/ValidationError';
 import { comparePasswords } from '../../../utils/user.util';
-import { omit } from 'lodash';
 
 interface createUserInput {
   username: string;
@@ -93,5 +93,47 @@ export async function validatePassword(
     return omit(user, 'password');
   } catch (error) {
     throw new AuthenticationError("error validating users's password");
+  }
+}
+
+interface findUserInput {
+  email?: string;
+  username?: string;
+  id?: string;
+}
+export async function findUser(
+  db: DB,
+  input: findUserInput
+): Promise<UserWithoutPassword | undefined> {
+  try {
+    const conditions: SQLWrapper[] = [];
+    if (input.email) {
+      conditions.push(eq(users.email, input.email));
+    }
+    if (input.username) {
+      conditions.push(eq(users.username, input.username));
+    }
+    if (input.id) {
+      conditions.push(eq(users.id, input.id));
+    }
+
+    if (conditions.length === 0) {
+      throw new Error('No valid input provided');
+    }
+    const [user] = await db
+      .select({
+        id: users.id,
+        email: users.email,
+        username: users.username,
+        createdAt: users.createdAt,
+        updatedAt: users.updatedAt,
+      })
+      .from(users)
+      .where(or(...conditions))
+      .limit(1);
+
+    return user;
+  } catch (error) {
+    throw new Error('Error finding user');
   }
 }
