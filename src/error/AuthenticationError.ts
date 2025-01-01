@@ -14,3 +14,9 @@ export class ForbiddenError extends BaseError {
     super('ForbiddenError', messae, 403, true, meta);
   }
 }
+
+export class AuthorizationError extends BaseError {
+  constructor(message: string = 'Unauthorized', meta?: Record<string, any>) {
+    super('AuthorizationError', message, 403, true, meta);
+  }
+}
