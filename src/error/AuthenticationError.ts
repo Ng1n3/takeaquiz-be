@@ -8,3 +8,9 @@ export class AuthenticationError extends BaseError {
     super('AuthenticationError', message, 401, true, meta);
   }
 }
+
+export class ForbiddenError extends BaseError {
+  constructor(messae: string = 'Forbidden', meta?: Record<string, any>) {
+    super('ForbiddenError', messae, 403, true, meta);
+  }
+}
