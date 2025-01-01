@@ -1,7 +1,13 @@
-import { BaseError } from './BaseError';
+import { NextFunction, Request, Response } from 'express';
+import { BaseError } from '../error/BaseError';
 
 export class ErrorHandler {
-  static handleError(error: Error, res: any): void {
+  static handleError(
+    error: Error,
+    res: Response,
+    req: Request,
+    next: NextFunction
+  ): void {
     // Log the error (you can use a logging service here)
     console.error('Unhandled Error:', error);
 

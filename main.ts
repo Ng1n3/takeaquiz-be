@@ -1,18 +1,22 @@
 import express, { Application } from 'express';
+import process from 'node:process';
 import { config } from './src/config.ts';
 import { ping, setupDb } from './src/db/index.ts';
-import process from "node:process";
+import { ErrorHandler } from './src/middleware/ErrorHandler.ts';
+
 
 const app: Application = express();
 
 // Middleware to parse JSON
 app.use(express.json());
 
-// Function to start the Express server
+app.use(ErrorHandler.handleError);
+
+
 function startServer() {
   const port: number = config.PORT || 5000; // Explicitly define the port as number
 
-  // Start the server and return the listen function
+
   app.listen(port, () => {
     console.log(`Server is currently listening on http://localhost:${port}`);
   });
