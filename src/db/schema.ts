@@ -14,7 +14,7 @@ const timeStamp = {
   createdAt: timestamp('created_at', { withTimezone: true })
     .defaultNow()
     .notNull(),
-  updatedAT: timestamp('updated_at', { withTimezone: true })
+  updatedAt: timestamp('updated_at', { withTimezone: true })
     .defaultNow()
     .$onUpdateFn(() => new Date())
     .notNull(),
@@ -31,8 +31,11 @@ export const sessions = pgTable('sessions', {
 });
 
 export const users = pgTable('users', {
-  id: uuid('id').primaryKey().notNull(),
+  id: varchar('id')
+    .primaryKey()
+    .$defaultFn(() => nanoid()),
   email: text('email').unique().notNull(),
+  username: text('username').unique().notNull(),
   password: text('password').notNull(),
   ...timeStamp,
 });

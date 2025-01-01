@@ -9,3 +9,15 @@ export class ValidationError extends BaseError {
     super('ValidationError', message, 400, true, meta || {});
   }
 }
+
+export class UniqueConstraintError extends BaseError {
+  constructor(field: string) {
+    super(
+      'UniqueConstraintError',
+      `${field} already exists`,
+      409,
+      true,
+      { field }
+    );
+  }
+}
