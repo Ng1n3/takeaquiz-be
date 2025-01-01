@@ -26,5 +26,5 @@ export type DB = Awaited<ReturnType<typeof setupDb>>['db'];
 export type Client = Awaited<ReturnType<typeof setupDb>>['client'];
 
 export function teardownDb(client: Client) {
-  client.end;
+  client.end();
 }

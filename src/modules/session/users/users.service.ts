@@ -1,5 +1,5 @@
 import { eq, or, SQLWrapper } from 'drizzle-orm';
-import { find, omit } from 'lodash';
+import {  omit } from 'lodash';
 import { DB } from '../../../db';
 import { users } from '../../../db/schema';
 import { AuthenticationError } from '../../../error/AuthenticationError';
