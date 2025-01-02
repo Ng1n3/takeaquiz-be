@@ -24,13 +24,9 @@ export async function createSession(db: DB, userId: string, userAgent: string) {
       return new AuthenticationError('Existing session invalidated');
     }
 
-    const token = signJwt({ userId, userAgent });
-
-    const HashedToken = await hashRefreshToken(token);
-
     const [session] = await db
       .insert(sessions)
-      .values({ userId, userAgent, valid: true, refreshToken: HashedToken })
+      .values({ userId, userAgent, valid: true })
       .returning();
 
     return session;
@@ -39,11 +35,11 @@ export async function createSession(db: DB, userId: string, userAgent: string) {
   }
 }
 
-export async function findSession(db: DB, sessionId: string) {
+export async function findSession(db: DB, userId: string, valid: boolean) {
   const session = await db
     .select({ id: sessions.id, userId: sessions.userId, valid: sessions.valid })
     .from(sessions)
-    .where(eq(sessions.id, sessionId))
+    .where(and(eq(sessions.userId, userId), eq(sessions.valid, valid)))
     .limit(1);
 
   return session.length > 0 ? session[0] : null;

@@ -14,4 +14,16 @@ export const createUserSchema = object({
   }),
 });
 
+export const loginUserSchema = object({
+  body: object({
+    email: string({
+      required_error: 'Email is required',
+    }).email('Not a valid Email'),
+    password: string({
+      required_error: 'password is required',
+    }),
+  }),
+});
+
 export type CreateUserInput = TypeOf<typeof createUserSchema>;
+export type LoginUserInput = TypeOf<typeof loginUserSchema>;

@@ -27,7 +27,7 @@ export const sessions = pgTable('sessions', {
   userId: varchar('user_id').references(() => users.id),
   valid: boolean('valid').default(true).notNull(),
   userAgent: text('user_agent'),
-  refreshToken: text('refresh_token').notNull(),
+  refreshToken: text('refresh_token'),
   ...timestamp,
 });
 

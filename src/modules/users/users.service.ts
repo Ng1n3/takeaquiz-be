@@ -1,6 +1,6 @@
 import { eq, or, SQLWrapper } from 'drizzle-orm';
-import {  omit } from 'lodash';
-import { DB } from '../../db';
+import { omit } from 'lodash';
+import { DB, setupDb } from '../../db';
 import { users } from '../../db/schema';
 import { AuthenticationError } from '../../error/AuthenticationError';
 import { BaseError } from '../../error/BaseError';
@@ -135,5 +135,31 @@ export async function findUser(
     return user;
   } catch (error) {
     throw new Error('Error finding user');
+  }
+}
+
+interface LoginInput {
+  email: string;
+  password: string;
+}
+
+export async function loginUser({
+  email,
+  password,
+}: LoginInput): Promise<UserWithoutPassword | AuthenticationError> {
+  try {
+    const { db } = setupDb();
+    const user = await validatePassword(db, email, password);
+    return user;
+  } catch (error) {
+    throw new AuthenticationError('Error logging in user', error.message);
+  }
+}
+
+export async function LogoutUser({userId:string}): Promise<void> {
+  try {
+    
+  } catch (error) {
+    
   }
 }
