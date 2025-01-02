@@ -13,12 +13,17 @@ interface createUserInput {
   password: string;
 }
 
+interface AuthResponse {
+  user: UserWithoutPassword;
+  message?: string;
+}
+
 type UserWithoutPassword = Omit<typeof users.$inferSelect, 'password'>;
 
 export async function createUser(
   db: DB,
   input: createUserInput
-): Promise<UserWithoutPassword | undefined> {
+): Promise<AuthResponse> {
   try {
     const [user] = await db
       .insert(users)
@@ -35,7 +40,7 @@ export async function createUser(
         updatedAt: users.updatedAt,
       });
 
-    return user;
+    return { user, message: 'User created successfully' };
   } catch (error) {
     if (error instanceof BaseError) {
       throw error;
@@ -146,11 +151,11 @@ interface LoginInput {
 export async function loginUser({
   email,
   password,
-}: LoginInput): Promise<UserWithoutPassword | AuthenticationError> {
+}: LoginInput): Promise<AuthResponse> {
   try {
     const { db } = setupDb();
     const user = await validatePassword(db, email, password);
-    return user;
+    return { user, message: 'User logged in successfully' };
   } catch (error) {
     throw new AuthenticationError('Error logging in user', error.message);
   }

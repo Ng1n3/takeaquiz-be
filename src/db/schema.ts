@@ -28,7 +28,7 @@ export const sessions = pgTable('sessions', {
   valid: boolean('valid').default(true).notNull(),
   userAgent: text('user_agent'),
   refreshToken: text('refresh_token'),
-  ...timestamp,
+  ...timeStamp,
 });
 
 export const users = pgTable('users', {
@@ -42,18 +42,22 @@ export const users = pgTable('users', {
 });
 
 export const tests = pgTable('tests', {
-  id: uuid('id').primaryKey().notNull(),
+  id: varchar('id')
+    .primaryKey()
+    .$defaultFn(() => nanoid()),
   title: text('title').notNull(),
   description: text('decription'),
-  createdBy: uuid('created_by')
+  createdBy: varchar('created_by')
     .references(() => users.id)
     .notNull(),
   ...timeStamp,
 });
 
 export const questions = pgTable('questions', {
-  id: uuid('id').primaryKey().notNull(),
-  testId: uuid('test_id')
+  id: varchar('id')
+    .primaryKey()
+    .$defaultFn(() => nanoid()),
+  testId: varchar('test_id')
     .references(() => tests.id)
     .notNull(),
   content: text('content').notNull(),
@@ -61,8 +65,10 @@ export const questions = pgTable('questions', {
 });
 
 export const answers = pgTable('answers', {
-  id: uuid('id').primaryKey().notNull(),
-  questionId: uuid('question_id')
+  id: varchar('id')
+    .primaryKey()
+    .$defaultFn(() => nanoid()),
+  questionId: varchar('question_id')
     .references(() => questions.id)
     .notNull(),
   content: text('content').notNull(),
@@ -71,14 +77,16 @@ export const answers = pgTable('answers', {
 export const userAnswers = pgTable(
   'user_answers',
   {
-    id: uuid('id').primaryKey().notNull(),
-    userId: uuid('user_id')
+    id: varchar('id')
+    .primaryKey()
+    .$defaultFn(() => nanoid()),
+    userId: varchar('user_id')
       .references(() => users.id)
       .notNull(),
-    questionId: uuid('question_id')
+    questionId: varchar('question_id')
       .references(() => questions.id)
       .notNull(),
-    answerId: uuid('answer_id')
+    answerId: varchar('answer_id')
       .references(() => answers.id)
       .notNull(),
     ...timestamp,
@@ -96,11 +104,13 @@ export const userAnswers = pgTable(
 // index('user_answer_unique', ['userId', 'questionId'], { unique: true });
 
 export const testResults = pgTable('test_results', {
-  id: uuid('id').primaryKey().notNull(),
-  userId: uuid('user_id')
+  id: varchar('id')
+    .primaryKey()
+    .$defaultFn(() => nanoid()),
+  userId: varchar('user_id')
     .references(() => users.id)
     .notNull(),
-  testId: uuid('test_id')
+  testId: varchar('test_id')
     .references(() => tests.id)
     .notNull(),
   score: numeric('score', { precision: 5, scale: 2 }).notNull(),

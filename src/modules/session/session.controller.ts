@@ -43,4 +43,5 @@ export async function getSessionHandler(req: Request, res: Response) {
 export async function deleteSessionHandler(req: Request, res: Response) {
   const sessionId = res.locals.user.session;
   await updateSession(db, sessionId, false);
+  return res.send({ accessToken: null, refreshToken: null });
 }
