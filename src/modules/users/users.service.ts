@@ -64,7 +64,7 @@ export async function validatePassword(
   db: DB,
   email: string,
   password: string
-): Promise<UserWithoutPassword | AuthenticationError> {
+): Promise<UserWithoutPassword> {
   try {
     const [user] = await db
       // .query(users)
@@ -81,13 +81,13 @@ export async function validatePassword(
       .limit(1);
 
     if (!user) {
-      return new AuthenticationError('User not found');
+      throw new AuthenticationError('User not found');
     }
 
     // Check password
     const issValid = await comparePasswords(password, user.password);
 
-    if (!issValid) return new AuthenticationError('Invalid password');
+    if (!issValid) throw new AuthenticationError('Invalid password');
 
     // const {password:_, ...userWIthoutPassword} = users
     return omit(user, 'password');
@@ -156,10 +156,7 @@ export async function loginUser({
   }
 }
 
-export async function LogoutUser({userId:string}): Promise<void> {
+export async function LogoutUser({ userId: string }): Promise<void> {
   try {
-    
-  } catch (error) {
-    
-  }
+  } catch (error) {}
 }

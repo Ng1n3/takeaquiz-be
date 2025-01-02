@@ -5,7 +5,7 @@ import { sessions } from '../../db/schema';
 import { AuthenticationError } from '../../error/AuthenticationError';
 import { signJwt } from '../../utils/jwt.utils';
 import { validatePassword } from '../users/users.service';
-import { createSession, findSession } from './session.service';
+import { createSession, findSession, updateSession } from './session.service';
 
 export const createSessionHandler = async (req: Request, res: Response) => {
   const { email, password } = req.body;
@@ -38,4 +38,9 @@ export async function getSessionHandler(req: Request, res: Response) {
   const valid = true;
   const sessions = await findSession(db, userId, valid);
   res.status(200).send(sessions);
+}
+
+export async function deleteSessionHandler(req: Request, res: Response) {
+  const sessionId = res.locals.user.session;
+  await updateSession(db, sessionId, false);
 }

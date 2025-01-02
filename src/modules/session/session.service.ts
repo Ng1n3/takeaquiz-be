@@ -21,13 +21,17 @@ export async function createSession(db: DB, userId: string, userAgent: string) {
         .set({ valid: false })
         .where(eq(sessions.userId, userId))
         .returning();
-      return new AuthenticationError('Existing session invalidated');
+      // return new AuthenticationError('Existing session invalidated');
     }
 
     const [session] = await db
       .insert(sessions)
       .values({ userId, userAgent, valid: true })
       .returning();
+
+    if (!session) {
+      throw new AuthenticationError('Error creating session');
+    }
 
     return session;
   } catch (error) {
