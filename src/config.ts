@@ -4,6 +4,7 @@ const schema = z.object({
   PORT: z.number().default(5000),
   HOST: z.string().default('0.0.0.0'),
   DATABASE_URL: z.string().optional(),
+  DATABASE_URL_DOCKER_PORT: z.number(),
   LOG_LEVEL: z.string().default('info'),
   METRICS_PREFIX: z.string().default('app_'),
   SALT_WORK_FACTOR: z.string(),
@@ -20,6 +21,9 @@ export const config = schema.parse({
   HOST: process.env.HOST ?? '0.0.0.0',
   // DATABASE_URL: process.env.DATABASE_URL || process.env.DATABASE_URL_DOCKER,
   DATABASE_URL: process.env.DATABASE_URL_DOCKER,
+  DATABASE_URL_DOCKER_PORT: parseInt(
+    process.env.DATABASE_URL_DOCKER_PORT || '5432'
+  ),
   LOG_LEVEL: 'info',
   METRICS_PREFIX: 'app_',
   SALT_WORK_FACTOR: process.env.SALT_WORK_FACTOR,

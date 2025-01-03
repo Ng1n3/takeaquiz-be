@@ -52,6 +52,21 @@ services:
       retries: 5
     networks:
       - backend
+    
+  dozzle:
+    container_name: dozzle
+    image: amir20/dozzle:latest
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - "9090:8080"
+    # environment:
+    #   - DOZZLE_AUTH=true
+    #   - DOZZLE_USERNAME=${DOZZLE_USERNAME}
+    #   - DOZZLE_PASSWORD=${DOZZLE_PASSWORD}
+    networks:
+      - backend
+  
   drizzle-studio:
     build:
       context: .
