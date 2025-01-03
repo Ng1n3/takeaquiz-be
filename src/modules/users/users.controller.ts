@@ -2,8 +2,13 @@ import { Request, Response } from 'express';
 import { setupDb } from '../../db';
 import { AuthenticationError } from '../../error/AuthenticationError';
 import { ConflictError } from '../../error/ConflictError';
-import { CreateUserInput, LoginUserInput } from './users.schema';
-import { createUser, loginUser } from './users.service';
+import {
+  CreateUserInput,
+  LoginUserInput,
+  LogoutUserInput,
+} from './users.schema';
+import { createUser, getUsers, loginUser, LogoutUser } from './users.service';
+import { BaseError } from '../../error/BaseError';
 
 export async function createUserHandler(
   req: Request<{}, {}, CreateUserInput['body']>,
@@ -33,4 +38,23 @@ export async function loginUserHandler(
   }
 }
 
-1
+export async function logoutUserHandler(
+  req: Request<{}, {}, LogoutUserInput['body']>,
+  res: Response
+) {
+  try {
+    await LogoutUser(req.body.userId);
+    return res.status(200).send({ message: 'User logged out' });
+  } catch (error) {
+    throw new ConflictError(error.message);
+  }
+}
+
+export async function getUsersHandler(req: Request, res: Response) {
+  try {
+    const users = await getUsers()
+    res.status(200).send(users)
+  } catch (error) {
+    throw new BaseError('Error fetching users', error.message)
+  }
+}

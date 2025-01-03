@@ -1,7 +1,7 @@
 import { and, eq, or, SQLWrapper } from 'drizzle-orm';
 import { omit } from 'lodash';
 import { DB, setupDb } from '../../db';
-import { sessions, users } from '../../db/schema';
+import { sessions, users, users } from '../../db/schema';
 import { AuthenticationError } from '../../error/AuthenticationError';
 import { BaseError } from '../../error/BaseError';
 import { ConflictError } from '../../error/ConflictError';
@@ -242,5 +242,23 @@ export async function LogoutUser(userId: string): Promise<string> {
     return 'User logged out successfully';
   } catch (error) {
     throw new ConflictError('Error logging out user', error.message);
+  }
+}
+
+export async function getUsers(): Promise<UserWithoutPassword[]> {
+  try {
+    const { db } = setupDb();
+    const AllUsers = await db
+      .select({
+        id: users.id,
+        email: users.email,
+        username: users.username,
+        createdAt: users.createdAt,
+        updatedAt: users.updatedAt,
+      })
+      .from(users);
+    return AllUsers;
+  } catch (error) {
+    throw new BaseError('Error getting users', error.message);
   }
 }

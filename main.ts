@@ -5,13 +5,16 @@ import { ping, setupDb } from './src/db/index.ts';
 import { NotFoundError } from './src/error/NotFoundError.ts';
 import { ErrorHandler } from './src/middleware/ErrorHandler.ts';
 import { userRouter } from './src/modules/users/users.router.ts';
+import { deserializeUser } from './src/middleware/deserializeUser.ts';
 
 const app: Application = express();
 
 // Middleware to parse JSON
 app.use(express.json());
 
-app.use('/api/users', userRouter());
+app.use(deserializeUser)
+
+app.use('/api/v1', userRouter());
 
 app.use((req: Request, res: Response, next: NextFunction) => {
   next(new NotFoundError(`Cannot ${req.method} ${req.originalUrl}`));

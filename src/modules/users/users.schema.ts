@@ -25,5 +25,14 @@ export const loginUserSchema = object({
   }),
 });
 
+export const logoutUserSchema = object({
+  body: object({
+    userId: string({
+      required_error: 'userId is required',
+    }),
+  }),
+});
+
 export type CreateUserInput = TypeOf<typeof createUserSchema>;
 export type LoginUserInput = TypeOf<typeof loginUserSchema>;
+export type LogoutUserInput = TypeOf<typeof logoutUserSchema>;

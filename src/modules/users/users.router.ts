@@ -1,18 +1,39 @@
 import express from 'express';
-import { validateRequest } from '../../middleware/validateResource';
+import { requireuser } from '../../middleware/requireUser';
+import { validateResources } from '../../middleware/validateResources';
 import { asyncHandler } from '../../utils/asyncHandlers';
-import { createUserHandler } from './users.controller';
-import { createUserSchema } from './users.schema';
+import {
+  createUserHandler,
+  getUsersHandler,
+  loginUserHandler,
+  logoutUserHandler,
+} from './users.controller';
+import {
+  createUserSchema,
+  loginUserSchema,
+  logoutUserSchema,
+} from './users.schema';
 
 export function userRouter() {
   const router = express.Router();
+  router.get('/users', requireuser, asyncHandler(getUsersHandler));
   router.post(
-    '/',
-    validateRequest(createUserSchema),
+    '/users',
+    validateResources(createUserSchema),
     asyncHandler(createUserHandler)
   );
 
+  router.post(
+    '/user/login',
+    validateResources(loginUserSchema),
+    asyncHandler(loginUserHandler)
+  );
+
+  router.post('/user/logout', [
+    requireuser,
+    validateResources(logoutUserSchema),
+    asyncHandler(logoutUserHandler),
+  ]);
+
   return router;
 }
-
-

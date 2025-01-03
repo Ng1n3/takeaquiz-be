@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import { AnyZodObject } from 'zod';
 import { ValidationError } from '../error/ValidationError';
 
-export const validateRequest =
+export const validateResources =
   (schema: AnyZodObject) =>
   async (req: Request, res: Response, next: NextFunction) => {
     try {
