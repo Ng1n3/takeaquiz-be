@@ -41,6 +41,7 @@ export const users = pgTable('users', {
   ...timeStamp,
 });
 
+
 export const tests = pgTable('tests', {
   id: varchar('id')
     .primaryKey()

@@ -32,10 +32,6 @@ services:
       sh -c "
         echo 'Initializing database...' &&
         sh ./init-db.sh &&
-        echo 'Dropping existing tables...' &&
-        psql $DATABASE_URL_DOCKER -c 'DROP SCHEMA public CASCADE; CREATE SCHEMA public;' &&
-        echo 'Running migrations...' &&
-        bun run db:migrate &&
         echo 'Starting development server...' &&
         bun dev
       "

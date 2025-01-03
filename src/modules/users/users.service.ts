@@ -1,11 +1,14 @@
-import { eq, or, SQLWrapper } from 'drizzle-orm';
+import { and, eq, or, SQLWrapper } from 'drizzle-orm';
 import { omit } from 'lodash';
 import { DB, setupDb } from '../../db';
-import { users } from '../../db/schema';
+import { sessions, users } from '../../db/schema';
 import { AuthenticationError } from '../../error/AuthenticationError';
 import { BaseError } from '../../error/BaseError';
+import { ConflictError } from '../../error/ConflictError';
 import { UniqueConstraintError } from '../../error/ValidationError';
+import { signJwt } from '../../utils/jwt.utils';
 import { comparePasswords } from '../../utils/user.util';
+import { createSession, findSession } from '../session/session.service';
 
 interface createUserInput {
   username: string;
@@ -15,6 +18,8 @@ interface createUserInput {
 
 interface AuthResponse {
   user: UserWithoutPassword;
+  accessToken?: string;
+  refreshToken?: string;
   message?: string;
 }
 
@@ -40,7 +45,28 @@ export async function createUser(
         updatedAt: users.updatedAt,
       });
 
-    return { user, message: 'User created successfully' };
+    const session = await createSession(db, user.id, 'default-agent');
+    const accessToken = signJwt(
+      { ...user, session: session.id },
+      { expiresIn: process.env.ACCESS_TOKEN_TTL }
+    );
+    const refreshToken = signJwt(
+      { ...user, session: session.id },
+      { expiresIn: process.env.REFRESH_TOKEN_TTL }
+    );
+
+    // Save refresh token
+    await db
+      .update(sessions)
+      .set({ refreshToken })
+      .where(eq(sessions.id, session.id));
+
+    return {
+      user,
+      accessToken,
+      refreshToken,
+      message: 'User created successfully',
+    };
   } catch (error) {
     if (error instanceof BaseError) {
       throw error;
@@ -155,13 +181,66 @@ export async function loginUser({
   try {
     const { db } = setupDb();
     const user = await validatePassword(db, email, password);
-    return { user, message: 'User logged in successfully' };
+    if (!user) {
+      throw new AuthenticationError('Invalid credentials');
+    }
+    // check for active session
+    const activesession = await db
+      .select()
+      .from(sessions)
+      .where(and(eq(sessions.valid, true), eq(sessions.userId, user.id)));
+
+    if (activesession) {
+      return {
+        user,
+        message: 'users is already logged in',
+      };
+    }
+
+    const session = await createSession(db, user.id, 'default-agent');
+    const accessToken = signJwt(
+      { ...user, session: session.id },
+      { expiresIn: process.env.ACCESS_TOKEN_TTL }
+    );
+    const refreshToken = signJwt(
+      { ...user, session: session.id },
+      { expiresIn: process.env.REFRESH_TOKEN_TTL }
+    );
+
+    // Save refresh token
+    await db
+      .update(sessions)
+      .set({ refreshToken })
+      .where(eq(sessions.id, session.id));
+
+    return {
+      user,
+      accessToken,
+      refreshToken,
+      message: 'User logged in successfully',
+    };
   } catch (error) {
     throw new AuthenticationError('Error logging in user', error.message);
   }
 }
 
-export async function LogoutUser({ userId: string }): Promise<void> {
+export async function LogoutUser(userId: string): Promise<string> {
   try {
-  } catch (error) {}
+    const { db } = setupDb();
+    const user = findUser(db, { id: userId });
+    if (!user) {
+      throw new AuthenticationError('User not found');
+    }
+    const session = await findSession(db, userId, true);
+    if (!session) {
+      throw new AuthenticationError('No active session found');
+    }
+    await db
+      .update(sessions)
+      .set({ valid: false, refreshToken: null })
+      .where(eq(sessions.userId, userId));
+    return 'User logged out successfully';
+  } catch (error) {
+    throw new ConflictError('Error logging out user', error.message);
+  }
 }

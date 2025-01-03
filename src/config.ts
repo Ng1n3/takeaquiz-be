@@ -9,7 +9,7 @@ const schema = z.object({
   SALT_WORK_FACTOR: z.string(),
   PUBLIC_KEY: z.string(),
   ACCESS_TOKEN_TTL: z.string(),
-  REFRESH_TOKEN: z.string(),
+  REFRESH_TOKEN_TTL: z.string(),
   PRIVATE_KEY: z.string(),
 });
 
@@ -25,6 +25,6 @@ export const config = schema.parse({
   SALT_WORK_FACTOR: process.env.SALT_WORK_FACTOR,
   ACCESS_TOKEN_TTL: process.env.ACCESS_TOKEN_TTL,
   PUBLIC_KEY: process.env.PUBLIC_KEY,
-  REFRESH_TOKEN: process.env.REFRESH_TOKEN,
+  REFRESH_TOKEN_TTL: process.env.REFRESH_TOKEN_TTL,
   PRIVATE_KEY: process.env.PRIVATE_KEY,
 });

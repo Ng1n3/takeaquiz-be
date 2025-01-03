@@ -12,8 +12,8 @@ export async function createUserHandler(
   try {
     const { db } = setupDb();
     const { email, username, password } = req.body;
-    const user = await createUser(db, { email, username, password });
-    return res.status(201).send(user);
+    const result = await createUser(db, { email, username, password });
+    return res.status(201).send(result);
   } catch (error) {
     return new ConflictError(error.message);
   }
@@ -32,3 +32,5 @@ export async function loginUserHandler(
     return new AuthenticationError(error.message);
   }
 }
+
+1
