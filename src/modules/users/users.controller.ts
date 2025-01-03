@@ -31,6 +31,7 @@ export async function loginUserHandler(
   try {
     const { email, password } = req.body;
     const user = await loginUser({ email, password });
+    console.log("Hi I'm fucking hit!");
     if (!user) throw new AuthenticationError('Invalid credentials');
     return res.status(200).send(user);
   } catch (error) {

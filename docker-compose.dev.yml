@@ -15,7 +15,7 @@ services:
       test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}']
       interval: 10s
       timeout: 5s
-      retries: 5
+      retries: 10
     networks:
       - backend
   api:
@@ -44,6 +44,35 @@ services:
       - '5000:5000'
     depends_on:
       db:
+        condition: service_healthy
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:5000/healthcheck']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - backend
+  drizzle-studio:
+    build:
+      context: .
+    environment:
+      - DATABASE_URL=${DATABASE_URL_DOCKER}
+      - SALT_WORK_FACTOR=${SALT_WORK_FACTOR}
+      - ACCESS_TOKEN_TTL=${ACCESS_TOKEN_TTL}
+      - REFRESH_TOKEN_TTL=${REFRESH_TOKEN_TTL}
+      - PUBLIC_KEY=${PUBLIC_KEY}
+      - PRIVATE_KEY=${PRIVATE_KEY}
+    command: >
+      sh -c "
+        echo 'Starting Drizzle Studio...' &&
+        bun run db:studio
+      "
+    ports:
+      - '4983:4983'
+    depends_on:
+      db:
+        condition: service_healthy
+      api:
         condition: service_healthy
     networks:
       - backend

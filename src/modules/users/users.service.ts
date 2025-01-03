@@ -184,6 +184,7 @@ export async function loginUser({
     if (!user) {
       throw new AuthenticationError('Invalid credentials');
     }
+    console.log("tryna login over here!");
     // check for active session
     const activesession = await db
       .select()

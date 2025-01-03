@@ -18,11 +18,12 @@ export function userRouter() {
   const router = express.Router();
   router.get('/users', requireuser, asyncHandler(getUsersHandler));
   router.post(
-    '/users',
+    '/user',
     validateResources(createUserSchema),
     asyncHandler(createUserHandler)
   );
 
+  
   router.post(
     '/user/login',
     validateResources(loginUserSchema),
