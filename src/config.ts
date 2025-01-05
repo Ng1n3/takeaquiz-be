@@ -32,3 +32,5 @@ export const config = schema.parse({
   REFRESH_TOKEN_TTL: process.env.REFRESH_TOKEN_TTL,
   PRIVATE_KEY: process.env.PRIVATE_KEY,
 });
+
+// simple update
